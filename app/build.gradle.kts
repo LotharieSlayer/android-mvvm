@@ -5,6 +5,7 @@ plugins {
 
     id("kotlin-parcelize")
     id("com.google.devtools.ksp")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -64,6 +65,8 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
 
 
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.dagger)
     ksp(libs.dagger.compiler)
