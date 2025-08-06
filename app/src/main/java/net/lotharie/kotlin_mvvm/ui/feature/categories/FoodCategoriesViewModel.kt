@@ -30,7 +30,7 @@ class FoodCategoriesViewModel @Inject constructor(private val foodMenu: FoodMenu
         private set
 
     init {
-        viewModelScope.launch { getFoodCategories() }
+        viewModelScope.launch { getFoodCategoriesForce() }
     }
 
     private suspend fun getFoodCategories() {
@@ -39,16 +39,28 @@ class FoodCategoriesViewModel @Inject constructor(private val foodMenu: FoodMenu
                 is DataState.Loading -> {
                     state = state.copy(isLoading = true)
                 }
+
                 is DataState.Success -> {
                     state = state.copy(categories = dataState.data, isLoading = false)
                     effects.send(FoodCategoriesContract.Effect.DataWasLoaded)
                 }
+
                 is DataState.Error -> {
-                    state = state.copy(isLoading = false)
+                    kotlinx.coroutines.delay(2000)
                 }
             }
         }
     }
+
+    /**
+     * Forcing the API that sometimes doesn't return data
+     */
+    private suspend fun getFoodCategoriesForce() {
+        while (this.state.categories.isEmpty()) {
+            getFoodCategories()
+        }
+    }
+
 }
 
 
