@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import net.lotharie.kotlin_mvvm.model.FoodItem
 import net.lotharie.kotlin_mvvm.model.api.DataState
-import net.lotharie.kotlin_mvvm.model.api.response.food_menu.FoodCategoriesResponse
-import net.lotharie.kotlin_mvvm.model.api.response.food_menu.MealsResponse
+import net.lotharie.kotlin_mvvm.model.api.response.food.FoodCategoriesResponse
+import net.lotharie.kotlin_mvvm.model.api.response.food.MealsResponse
 import net.lotharie.kotlin_mvvm.service.api.FoodMenuApiService
 import javax.inject.Inject
 import javax.inject.Singleton

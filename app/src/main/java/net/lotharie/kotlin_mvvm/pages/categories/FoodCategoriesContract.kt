@@ -1,4 +1,4 @@
-package net.lotharie.kotlin_mvvm.ui.feature.categories
+package net.lotharie.kotlin_mvvm.pages.categories
 
 import net.lotharie.kotlin_mvvm.model.FoodItem
 

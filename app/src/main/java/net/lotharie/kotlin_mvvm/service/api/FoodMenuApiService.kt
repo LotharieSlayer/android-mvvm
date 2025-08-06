@@ -1,7 +1,7 @@
 package net.lotharie.kotlin_mvvm.service.api
 
-import net.lotharie.kotlin_mvvm.model.api.response.food_menu.FoodCategoriesResponse
-import net.lotharie.kotlin_mvvm.model.api.response.food_menu.MealsResponse
+import net.lotharie.kotlin_mvvm.model.api.response.food.FoodCategoriesResponse
+import net.lotharie.kotlin_mvvm.model.api.response.food.MealsResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 import javax.inject.Inject

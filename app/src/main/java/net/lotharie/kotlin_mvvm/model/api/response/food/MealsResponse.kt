@@ -1,4 +1,4 @@
-package net.lotharie.kotlin_mvvm.model.api.response.food_menu
+package net.lotharie.kotlin_mvvm.model.api.response.food
 
 import com.google.gson.annotations.SerializedName
 

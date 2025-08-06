@@ -1,4 +1,4 @@
-package net.lotharie.kotlin_mvvm.ui.feature.categories
+package net.lotharie.kotlin_mvvm.pages.categories
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -9,6 +9,7 @@ import net.lotharie.kotlin_mvvm.repository.FoodMenuRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import net.lotharie.kotlin_mvvm.model.api.DataState
@@ -46,7 +47,7 @@ class FoodCategoriesViewModel @Inject constructor(private val foodMenu: FoodMenu
                 }
 
                 is DataState.Error -> {
-                    kotlinx.coroutines.delay(2000)
+                    delay(2000)
                 }
             }
         }

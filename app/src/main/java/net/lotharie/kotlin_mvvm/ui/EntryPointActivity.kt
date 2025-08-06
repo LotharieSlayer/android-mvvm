@@ -12,10 +12,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import coil3.annotation.ExperimentalCoilApi
-import net.lotharie.kotlin_mvvm.ui.feature.category_details.FoodCategoryDetailsScreen
-import net.lotharie.kotlin_mvvm.ui.feature.category_details.FoodCategoryDetailsViewModel
-import net.lotharie.kotlin_mvvm.ui.feature.categories.FoodCategoriesScreen
-import net.lotharie.kotlin_mvvm.ui.feature.categories.FoodCategoriesViewModel
+import net.lotharie.kotlin_mvvm.pages.category_details.FoodCategoryDetailsScreen
+import net.lotharie.kotlin_mvvm.pages.category_details.FoodCategoryDetailsViewModel
+import net.lotharie.kotlin_mvvm.pages.categories.FoodCategoriesScreen
+import net.lotharie.kotlin_mvvm.pages.categories.FoodCategoriesViewModel
 import net.lotharie.kotlin_mvvm.ui.NavigationKeys.Arg.FOOD_CATEGORY_ID
 import net.lotharie.kotlin_mvvm.ui.theme.KotlinMVVMTheme
 import dagger.hilt.android.AndroidEntryPoint
