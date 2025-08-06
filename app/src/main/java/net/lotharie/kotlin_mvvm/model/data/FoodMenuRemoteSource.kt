@@ -43,7 +43,7 @@ class FoodMenuRemoteSource @Inject constructor(private val foodMenuApi: FoodMenu
             FoodItem(
                 id = category.id,
                 name = category.name,
-                thumbnailUrl = category.thumbnailUrl
+                thumbnailUrl = category.thumbnailUrl ?: "",
             )
         }
     }

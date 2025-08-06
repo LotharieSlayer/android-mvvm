@@ -16,5 +16,5 @@ data class FoodCategoryResponse(
 data class MealResponse(
     @SerializedName("idMeal") val id: String,
     @SerializedName("strMeal") val name: String,
-    @SerializedName("strMealThumb") val thumbnailUrl: String,
+    @SerializedName("strMealThumb") val thumbnailUrl: String?,
 )
