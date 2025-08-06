@@ -1,8 +1,12 @@
 package net.lotharie.kotlin_mvvm.repository
 
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import net.lotharie.kotlin_mvvm.model.FoodItem
+import net.lotharie.kotlin_mvvm.model.api.DataState
 import net.lotharie.kotlin_mvvm.model.api.response.food_menu.FoodCategoriesResponse
 import net.lotharie.kotlin_mvvm.model.api.response.food_menu.MealsResponse
 import net.lotharie.kotlin_mvvm.service.api.FoodMenuApiService
@@ -14,19 +18,36 @@ class FoodMenuRepository @Inject constructor(private val foodMenuApi: FoodMenuAp
 
     private var cachedCategories: List<FoodItem>? = null
 
-    suspend fun getFoodCategories(): List<FoodItem> = withContext(Dispatchers.IO) {
-        var cachedCategories = cachedCategories
-        if (cachedCategories == null) {
-            cachedCategories = foodMenuApi.getFoodCategories().mapCategoriesToItems()
-            this@FoodMenuRepository.cachedCategories = cachedCategories
+    fun getFoodCategories(): Flow<DataState<List<FoodItem>>> = flow {
+        emit(DataState.Loading)
+        Log.d("FoodMenuRepository", "Fetching food categories...")
+        try {
+            var categories = cachedCategories
+            if (categories == null) {
+                categories = foodMenuApi.getFoodCategories().mapCategoriesToItems()
+                Log.d("FoodMenuRepository", "Fetched categories from API: $categories")
+                cachedCategories = categories
+            }
+            emit(DataState.Success(categories))
+        } catch (e: Exception) {
+            Log.d("FoodMenuRepository", "Error fetching food categories", e)
+            emit(DataState.Error(e))
         }
-        return@withContext cachedCategories
-    }
+    }.flowOn(Dispatchers.IO)
 
-    suspend fun getMealsByCategory(categoryId: String) = withContext(Dispatchers.IO) {
-        val categoryName = getFoodCategories().first { it.id == categoryId }.name
-        return@withContext foodMenuApi.getMealsByCategory(categoryName).mapMealsToItems()
-    }
+    fun getMealsByCategory(categoryId: String): Flow<DataState<List<FoodItem>>> = flow {
+        emit(DataState.Loading)
+        try {
+            val categories = cachedCategories ?: foodMenuApi.getFoodCategories().mapCategoriesToItems().also {
+                cachedCategories = it
+            }
+            val categoryName = categories.first { it.id == categoryId }.name
+            val meals = foodMenuApi.getMealsByCategory(categoryName).mapMealsToItems()
+            emit(DataState.Success(meals))
+        } catch (e: Exception) {
+            emit(DataState.Error(e))
+        }
+    }.flowOn(Dispatchers.IO)
 
     private fun FoodCategoriesResponse.mapCategoriesToItems(): List<FoodItem> {
         return this.categories.map { category ->
@@ -48,5 +69,4 @@ class FoodMenuRepository @Inject constructor(private val foodMenuApi: FoodMenuAp
             )
         }
     }
-
 }

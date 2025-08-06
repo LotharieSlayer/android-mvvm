@@ -9,7 +9,9 @@ import net.lotharie.kotlin_mvvm.repository.FoodMenuRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import net.lotharie.kotlin_mvvm.model.api.DataState
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,10 +34,19 @@ class FoodCategoriesViewModel @Inject constructor(private val foodMenu: FoodMenu
     }
 
     private suspend fun getFoodCategories() {
-        val categories = foodMenu.getFoodCategories()
-        viewModelScope.launch {
-            state = state.copy(categories = categories, isLoading = false)
-            effects.send(FoodCategoriesContract.Effect.DataWasLoaded)
+        foodMenu.getFoodCategories().collectLatest { dataState ->
+            when (dataState) {
+                is DataState.Loading -> {
+                    state = state.copy(isLoading = true)
+                }
+                is DataState.Success -> {
+                    state = state.copy(categories = dataState.data, isLoading = false)
+                    effects.send(FoodCategoriesContract.Effect.DataWasLoaded)
+                }
+                is DataState.Error -> {
+                    state = state.copy(isLoading = false)
+                }
+            }
         }
     }
 }
