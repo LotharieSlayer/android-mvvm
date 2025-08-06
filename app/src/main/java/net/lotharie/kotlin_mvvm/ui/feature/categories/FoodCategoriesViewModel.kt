@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import net.lotharie.kotlin_mvvm.model.data.FoodMenuRemoteSource
+import net.lotharie.kotlin_mvvm.repository.FoodMenuRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.UNLIMITED
@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class FoodCategoriesViewModel @Inject constructor(private val remoteSource: FoodMenuRemoteSource) :
+class FoodCategoriesViewModel @Inject constructor(private val foodMenu: FoodMenuRepository) :
     ViewModel() {
 
     var state by mutableStateOf(
@@ -32,7 +32,7 @@ class FoodCategoriesViewModel @Inject constructor(private val remoteSource: Food
     }
 
     private suspend fun getFoodCategories() {
-        val categories = remoteSource.getFoodCategories()
+        val categories = foodMenu.getFoodCategories()
         viewModelScope.launch {
             state = state.copy(categories = categories, isLoading = false)
             effects.send(FoodCategoriesContract.Effect.DataWasLoaded)

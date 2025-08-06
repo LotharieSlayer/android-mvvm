@@ -1,7 +1,7 @@
 package net.lotharie.kotlin_mvvm.di
 
-import net.lotharie.kotlin_mvvm.model.data.FoodMenuApi
-import net.lotharie.kotlin_mvvm.model.data.FoodMenuApi.Companion.API_URL
+import net.lotharie.kotlin_mvvm.service.api.FoodMenuApiService
+import net.lotharie.kotlin_mvvm.service.api.FoodMenuApiService.Companion.API_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,8 +40,8 @@ class FoodMenuApiProvider {
     @Singleton
     fun provideFoodMenuApiService(
         retrofit: Retrofit
-    ): FoodMenuApi.Service {
-        return retrofit.create(FoodMenuApi.Service::class.java)
+    ): FoodMenuApiService.ApiService {
+        return retrofit.create(FoodMenuApiService.ApiService::class.java)
     }
 
 }

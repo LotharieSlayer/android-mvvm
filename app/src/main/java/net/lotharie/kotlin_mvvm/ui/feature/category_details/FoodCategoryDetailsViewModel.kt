@@ -7,7 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 
 import androidx.lifecycle.viewModelScope
-import net.lotharie.kotlin_mvvm.model.data.FoodMenuRemoteSource
+import net.lotharie.kotlin_mvvm.repository.FoodMenuRepository
 import net.lotharie.kotlin_mvvm.ui.NavigationKeys
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FoodCategoryDetailsViewModel @Inject constructor(
     private val stateHandle: SavedStateHandle,
-    private val repository: FoodMenuRemoteSource
+    private val repository: FoodMenuRepository
 ) : ViewModel() {
 
     var state by mutableStateOf(

@@ -1,15 +1,16 @@
-package net.lotharie.kotlin_mvvm.model.data
+package net.lotharie.kotlin_mvvm.repository
 
-import net.lotharie.kotlin_mvvm.model.FoodItem
-import net.lotharie.kotlin_mvvm.model.response.FoodCategoriesResponse
-import net.lotharie.kotlin_mvvm.model.response.MealsResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import net.lotharie.kotlin_mvvm.model.FoodItem
+import net.lotharie.kotlin_mvvm.model.api.response.food_menu.FoodCategoriesResponse
+import net.lotharie.kotlin_mvvm.model.api.response.food_menu.MealsResponse
+import net.lotharie.kotlin_mvvm.service.api.FoodMenuApiService
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class FoodMenuRemoteSource @Inject constructor(private val foodMenuApi: FoodMenuApi) {
+class FoodMenuRepository @Inject constructor(private val foodMenuApi: FoodMenuApiService) {
 
     private var cachedCategories: List<FoodItem>? = null
 
@@ -17,7 +18,7 @@ class FoodMenuRemoteSource @Inject constructor(private val foodMenuApi: FoodMenu
         var cachedCategories = cachedCategories
         if (cachedCategories == null) {
             cachedCategories = foodMenuApi.getFoodCategories().mapCategoriesToItems()
-            this@FoodMenuRemoteSource.cachedCategories = cachedCategories
+            this@FoodMenuRepository.cachedCategories = cachedCategories
         }
         return@withContext cachedCategories
     }
