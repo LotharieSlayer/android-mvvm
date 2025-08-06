@@ -20,7 +20,6 @@ import net.lotharie.kotlin_mvvm.ui.components.organisms.appbar.CategoriesAppBar
 import net.lotharie.kotlin_mvvm.ui.components.organisms.food.FoodItemList
 import net.lotharie.kotlin_mvvm.ui.theme.KotlinMVVMTheme
 
-@ExperimentalCoilApi
 @Composable
 fun FoodCategoriesScreen(
     state: FoodCategoriesContract.State,
@@ -53,7 +52,6 @@ fun FoodCategoriesScreen(
     }
 }
 
-@OptIn(ExperimentalCoilApi::class)
 @Preview(showBackground = true)
 @Composable
 fun FoodCategoriesScreenPreview() {
