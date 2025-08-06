@@ -1,11 +1,11 @@
 package net.lotharie.kotlin_mvvm.di
 
 import net.lotharie.kotlin_mvvm.service.api.FoodMenuApiService
-import net.lotharie.kotlin_mvvm.service.api.FoodMenuApiService.Companion.API_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import net.lotharie.kotlin_mvvm.BuildConfig
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -32,7 +32,7 @@ class FoodMenuApiProvider {
             .Builder()
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(API_URL)
+            .baseUrl(BuildConfig.API_BASE_URL)
             .build()
     }
 

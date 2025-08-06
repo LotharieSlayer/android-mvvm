@@ -21,8 +21,4 @@ class FoodMenuApiService @Inject constructor(private val service: ApiService) {
         @GET("filter.php")
         suspend fun getMealsByCategory(@Query("c") categoryId: String): MealsResponse
     }
-
-    companion object {
-        const val API_URL = "https://www.themealdb.com/api/json/v1/1/"
-    }
 }

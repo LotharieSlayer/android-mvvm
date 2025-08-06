@@ -29,6 +29,20 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+
+            // Environment variables for release build
+            buildConfigField("String", "API_BASE_URL", "\"https://www.themealdb.com/api/json/v1/1/\"")
+        }
+
+         debug {
+            isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+
+            // Environment variables for release build
+            buildConfigField("String", "API_BASE_URL", "\"https://www.themealdb.com/api/json/v1/1/\"")
         }
     }
     compileOptions {
@@ -40,6 +54,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
