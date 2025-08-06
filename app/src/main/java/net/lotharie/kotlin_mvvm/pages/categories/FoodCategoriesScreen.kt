@@ -56,8 +56,15 @@ fun FoodCategoriesScreen(
 @OptIn(ExperimentalCoilApi::class)
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreview() {
+fun FoodCategoriesScreenPreview() {
     KotlinMVVMTheme {
-        FoodCategoriesScreen(FoodCategoriesContract.State(), null) { }
+        FoodCategoriesScreen(
+            state = FoodCategoriesContract.State(
+                categories = emptyList(),
+                isLoading = false
+            ),
+            effectFlow = null,
+            onNavigationRequested = {}
+        )
     }
 }

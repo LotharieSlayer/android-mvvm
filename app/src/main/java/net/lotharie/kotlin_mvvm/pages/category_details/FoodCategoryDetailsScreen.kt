@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.request.transformations
 import coil3.transform.CircleCropTransformation
@@ -40,4 +41,15 @@ fun FoodCategoryDetailsScreen(state: FoodCategoryDetailsContract.State) {
             )
         }
     }
+}
+
+@Preview
+@Composable
+fun FoodCategoryDetailsScreenPreview() {
+    FoodCategoryDetailsScreen(
+        state = FoodCategoryDetailsContract.State(
+            category = null,
+            categoryFoodItems = emptyList()
+        )
+    )
 }
