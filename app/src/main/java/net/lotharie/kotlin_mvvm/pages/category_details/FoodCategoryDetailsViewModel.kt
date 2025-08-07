@@ -10,7 +10,11 @@ import net.lotharie.kotlin_mvvm.model.api.DataState
 import net.lotharie.kotlin_mvvm.repository.FoodMenuRepository
 import net.lotharie.kotlin_mvvm.ui.NavigationKeys
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,55 +24,23 @@ class FoodCategoryDetailsViewModel @Inject constructor(
     private val repository: FoodMenuRepository
 ) : ViewModel() {
 
-    var state by mutableStateOf(
-        FoodCategoryDetailsContract.State(
-            null, listOf()
-        )
-    )
-        private set
-
-    var isLoading by mutableStateOf(false)
-        private set
-
-    var error by mutableStateOf<Exception?>(null)
-        private set
-
-    init {
-        viewModelScope.launch {
-            val categoryId = stateHandle.get<String>(NavigationKeys.Arg.FOOD_CATEGORY_ID)
-                ?: throw IllegalStateException("No categoryId was passed to destination.")
-
-            repository.getFoodCategories().collectLatest { dataState ->
+    val categoryId = stateHandle.get<String>(NavigationKeys.Arg.FOOD_CATEGORY_ID) ?: ""
+    val categoryDetailsUiState: StateFlow<CategoryDetailsUiState> =
+        repository.getMealsByCategory(categoryId)
+            .map { dataState ->
                 when (dataState) {
-                    is DataState.Loading -> {
-                        isLoading = true
-                        error = null
-                    }
-                    is DataState.Success -> {
-                        isLoading = false
-                        val category = dataState.data.first { it.id == categoryId }
-                        state = state.copy(category = category)
-                        // Ensuite, charge les meals
-                        repository.getMealsByCategory(categoryId).collectLatest { mealState ->
-                            when (mealState) {
-                                is DataState.Loading -> isLoading = true
-                                is DataState.Success -> {
-                                    isLoading = false
-                                    state = state.copy(categoryFoodItems = mealState.data)
-                                }
-                                is DataState.Error -> {
-                                    isLoading = false
-                                    error = mealState.exception
-                                }
-                            }
-                        }
-                    }
-                    is DataState.Error -> {
-                        isLoading = false
-                        error = dataState.exception
-                    }
+                    is DataState.Loading -> CategoryDetailsUiState.Loading
+                    is DataState.Success -> CategoryDetailsUiState.Success(dataState.data.firstOrNull(), dataState.data)
+                    is DataState.Error -> CategoryDetailsUiState.Error(dataState.exception)
                 }
             }
-        }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = CategoryDetailsUiState.Loading
+            )
+
+    init {
+        viewModelScope.launch { }
     }
 }

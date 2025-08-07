@@ -2,6 +2,7 @@ package net.lotharie.kotlin_mvvm.repository
 
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -18,22 +19,33 @@ class FoodMenuRepository @Inject constructor(private val foodMenuApi: FoodMenuAp
 
     private var cachedCategories: List<FoodItem>? = null
 
-    fun getFoodCategories(): Flow<DataState<List<FoodItem>>> = flow {
+    fun getFoodCategories(
+        maxRetries: Int = 99, // Maximum number of retries for fetching categories (because API is unstable -_-)
+        retryDelayMillis: Long = 2000
+    ): Flow<DataState<List<FoodItem>>> = flow {
         emit(DataState.Loading)
-        Log.d("FoodMenuRepository", "Fetching food categories...")
-        try {
-            var categories = cachedCategories
-            if (categories == null) {
-                categories = foodMenuApi.getFoodCategories().mapCategoriesToItems()
-                Log.d("FoodMenuRepository", "Fetched categories from API: $categories")
-                cachedCategories = categories
+        var attempt = 0
+        var lastException: Exception? = null
+        while (attempt < maxRetries) {
+            try {
+                var categories = cachedCategories
+                if (categories == null) {
+                    categories = foodMenuApi.getFoodCategories().mapCategoriesToItems()
+                    Log.d("FoodMenuRepository", "Fetched categories from API: $categories")
+                    cachedCategories = categories
+                }
+                emit(DataState.Success(categories))
+                return@flow
+            } catch (e: Exception) {
+                lastException = e
+                attempt++
+                if (attempt < maxRetries) {
+                    delay(retryDelayMillis)
+                }
             }
-            emit(DataState.Success(categories))
-        } catch (e: Exception) {
-            Log.d("FoodMenuRepository", "Error fetching food categories", e)
-            emit(DataState.Error(e))
         }
-    }.flowOn(Dispatchers.IO)
+        emit(DataState.Error(lastException ?: Exception("Unknown error")))
+    }
 
     fun getMealsByCategory(categoryId: String): Flow<DataState<List<FoodItem>>> = flow {
         emit(DataState.Loading)

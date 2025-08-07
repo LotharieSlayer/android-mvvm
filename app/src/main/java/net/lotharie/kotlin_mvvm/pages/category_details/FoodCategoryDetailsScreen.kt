@@ -13,13 +13,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.request.transformations
 import coil3.transform.CircleCropTransformation
+import net.lotharie.kotlin_mvvm.model.FoodItem
+import net.lotharie.kotlin_mvvm.ui.components.atoms.LoadingCircleBox
 import net.lotharie.kotlin_mvvm.ui.components.organisms.appbar.CategoryDetailsCollapsingAppBar
 import net.lotharie.kotlin_mvvm.ui.components.organisms.food.FoodItemList
 import kotlin.math.min
 
 
 @Composable
-fun FoodCategoryDetailsScreen(state: FoodCategoryDetailsContract.State) {
+fun FoodCategoryDetailsScreen(state: CategoryDetailsUiState) {
     val scrollState = rememberLazyListState()
     val scrollOffset: Float = min(
         1f,
@@ -27,18 +29,28 @@ fun FoodCategoryDetailsScreen(state: FoodCategoryDetailsContract.State) {
     )
     Surface(color = MaterialTheme.colorScheme.background) {
         Column {
-            Surface(shadowElevation = 4.dp) {
-                CategoryDetailsCollapsingAppBar(state.category, scrollOffset)
-            }
-            Spacer(modifier = Modifier.height(2.dp))
-            FoodItemList(foodItems = state.categoryFoodItems,
-                expandableItems = false,
-                iconTransformationBuilder = {
-                    transformations(
-                        CircleCropTransformation()
+            when (state) {
+                is CategoryDetailsUiState.Success -> {
+                    Surface(shadowElevation = 4.dp) {
+                        CategoryDetailsCollapsingAppBar(state.category, scrollOffset)
+                    }
+                    Spacer(modifier = Modifier.height(2.dp))
+                    FoodItemList(foodItems = state.categoryFoodItems,
+                        expandableItems = false,
+                        iconTransformationBuilder = {
+                            transformations(
+                                CircleCropTransformation()
+                            )
+                        }
                     )
                 }
-            )
+                is CategoryDetailsUiState.Loading -> {
+                    LoadingCircleBox()
+                }
+                is CategoryDetailsUiState.Error -> {
+                    // Show an error message
+                }
+                }
         }
     }
 }
@@ -47,9 +59,17 @@ fun FoodCategoryDetailsScreen(state: FoodCategoryDetailsContract.State) {
 @Composable
 fun FoodCategoryDetailsScreenPreview() {
     FoodCategoryDetailsScreen(
-        state = FoodCategoryDetailsContract.State(
-            category = null,
-            categoryFoodItems = emptyList()
+        state = CategoryDetailsUiState.Success(
+            category = FoodItem(
+                id = "1",
+                name = "Pizza",
+                description = "Delicious cheese pizza",
+                thumbnailUrl = ""
+            ),
+            categoryFoodItems = listOf(
+                FoodItem(id = "1", name = "4 cheeses", description = "Miam miam miam", thumbnailUrl = ""),
+                FoodItem(id = "2", name = "Pineapple", description = "Juicy pineapple weird pizza", thumbnailUrl = "")
+            )
         )
     )
 }

@@ -11,10 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import coil3.annotation.ExperimentalCoilApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onEach
+import net.lotharie.kotlin_mvvm.model.FoodItem
 import net.lotharie.kotlin_mvvm.ui.components.atoms.LoadingCircleBox
 import net.lotharie.kotlin_mvvm.ui.components.organisms.appbar.CategoriesAppBar
 import net.lotharie.kotlin_mvvm.ui.components.organisms.food.FoodItemList
@@ -22,32 +19,31 @@ import net.lotharie.kotlin_mvvm.ui.theme.KotlinMVVMTheme
 
 @Composable
 fun FoodCategoriesScreen(
-    state: FoodCategoriesContract.State,
-    effectFlow: Flow<FoodCategoriesContract.Effect>?,
+    state: CategoriesUiState,
     onNavigationRequested: (itemId: String) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
-    // Listen for side effects from the VM
-    LaunchedEffect(effectFlow) {
-        effectFlow?.onEach { effect ->
-            if (effect is FoodCategoriesContract.Effect.DataWasLoaded)
-                snackbarHostState.showSnackbar(
-                    message = "Food categories are loaded.",
-                    duration = SnackbarDuration.Short
-                )
-        }?.collect()
-    }
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = { CategoriesAppBar() }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {
-            FoodItemList(foodItems = state.categories,
-                onItemClicked = onNavigationRequested
-            )
-            if (state.isLoading)
-                LoadingCircleBox()
+            when (state) {
+                is CategoriesUiState.Loading -> LoadingCircleBox()
+                is CategoriesUiState.Success -> FoodItemList(
+                    foodItems = state.categories,
+                    onItemClicked = onNavigationRequested
+                )
+                is CategoriesUiState.Error -> {
+                    LaunchedEffect(state.exception) {
+                        snackbarHostState.showSnackbar(
+                            message = "Error: ${state.exception.message}",
+                            duration = SnackbarDuration.Short
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -57,11 +53,12 @@ fun FoodCategoriesScreen(
 fun FoodCategoriesScreenPreview() {
     KotlinMVVMTheme {
         FoodCategoriesScreen(
-            state = FoodCategoriesContract.State(
-                categories = emptyList(),
-                isLoading = false
+            state = CategoriesUiState.Success(
+                categories = listOf(
+                    FoodItem(id = "1", name = "Pizza", description = "Delicious cheese pizza", thumbnailUrl = ""),
+                    FoodItem(id = "2", name = "Burger", description = "Juicy beef burger", thumbnailUrl = "")
+                )
             ),
-            effectFlow = null,
             onNavigationRequested = {}
         )
     }

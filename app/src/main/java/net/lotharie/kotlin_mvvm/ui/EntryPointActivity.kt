@@ -4,7 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -12,14 +14,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import coil3.annotation.ExperimentalCoilApi
-import net.lotharie.kotlin_mvvm.pages.category_details.FoodCategoryDetailsScreen
-import net.lotharie.kotlin_mvvm.pages.category_details.FoodCategoryDetailsViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import net.lotharie.kotlin_mvvm.pages.categories.FoodCategoriesScreen
 import net.lotharie.kotlin_mvvm.pages.categories.FoodCategoriesViewModel
+import net.lotharie.kotlin_mvvm.pages.category_details.FoodCategoryDetailsScreen
+import net.lotharie.kotlin_mvvm.pages.category_details.FoodCategoryDetailsViewModel
 import net.lotharie.kotlin_mvvm.ui.NavigationKeys.Arg.FOOD_CATEGORY_ID
 import net.lotharie.kotlin_mvvm.ui.theme.KotlinMVVMTheme
-import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.receiveAsFlow
 
 
 // Single Activity per app
@@ -57,20 +58,24 @@ private fun FoodApp() {
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-private fun FoodCategoriesDestination(navController: NavHostController) {
-    val viewModel: FoodCategoriesViewModel = hiltViewModel()
+private fun FoodCategoriesDestination(
+    navController: NavHostController,
+    viewModel: FoodCategoriesViewModel = hiltViewModel()
+) {
+    val state by viewModel.categoriesUiState.collectAsStateWithLifecycle()
     FoodCategoriesScreen(
-        state = viewModel.state,
-        effectFlow = viewModel.effects.receiveAsFlow(),
+        state = state,
         onNavigationRequested = { itemId ->
             navController.navigate("${NavigationKeys.Route.FOOD_CATEGORIES_LIST}/${itemId}")
         })
 }
 
 @Composable
-private fun FoodCategoryDetailsDestination() {
-    val viewModel: FoodCategoryDetailsViewModel = hiltViewModel()
-    FoodCategoryDetailsScreen(viewModel.state)
+private fun FoodCategoryDetailsDestination(
+    viewModel: FoodCategoryDetailsViewModel = hiltViewModel()
+) {
+    val state by viewModel.categoryDetailsUiState.collectAsStateWithLifecycle()
+    FoodCategoryDetailsScreen(state)
 }
 
 object NavigationKeys {
