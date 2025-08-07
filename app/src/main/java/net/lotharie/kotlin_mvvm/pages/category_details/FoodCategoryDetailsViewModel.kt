@@ -1,27 +1,23 @@
 package net.lotharie.kotlin_mvvm.pages.category_details
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import net.lotharie.kotlin_mvvm.model.api.DataState
-import net.lotharie.kotlin_mvvm.repository.FoodMenuRepository
-import net.lotharie.kotlin_mvvm.ui.NavigationKeys
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import net.lotharie.kotlin_mvvm.model.api.DataState
+import net.lotharie.kotlin_mvvm.repository.FoodMenuRepository
+import net.lotharie.kotlin_mvvm.ui.NavigationKeys
 import javax.inject.Inject
 
 @HiltViewModel
 class FoodCategoryDetailsViewModel @Inject constructor(
-    private val stateHandle: SavedStateHandle,
-    private val repository: FoodMenuRepository
+    stateHandle: SavedStateHandle,
+    repository: FoodMenuRepository
 ) : ViewModel() {
 
     val categoryId = stateHandle.get<String>(NavigationKeys.Arg.FOOD_CATEGORY_ID) ?: ""
@@ -30,7 +26,7 @@ class FoodCategoryDetailsViewModel @Inject constructor(
             .map { dataState ->
                 when (dataState) {
                     is DataState.Loading -> CategoryDetailsUiState.Loading
-                    is DataState.Success -> CategoryDetailsUiState.Success(dataState.data.firstOrNull(), dataState.data)
+                    is DataState.Success -> CategoryDetailsUiState.Success(dataState.data)
                     is DataState.Error -> CategoryDetailsUiState.Error(dataState.exception)
                 }
             }

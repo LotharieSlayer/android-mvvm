@@ -18,14 +18,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import coil3.annotation.ExperimentalCoilApi
 import coil3.request.ImageRequest
-import net.lotharie.kotlin_mvvm.model.FoodItem
 import net.lotharie.kotlin_mvvm.noRippleClickable
 import net.lotharie.kotlin_mvvm.ui.components.atoms.ExpandableIcon
+import net.lotharie.kotlin_mvvm.ui.components.organisms.food.Item
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
 fun FoodItemRow(
-    item: FoodItem,
+    item: Item,
     itemShouldExpand: Boolean = false,
     iconTransformationBuilder: ImageRequest.Builder.() -> Unit = { },
     onItemClicked: (id: String) -> Unit = { }

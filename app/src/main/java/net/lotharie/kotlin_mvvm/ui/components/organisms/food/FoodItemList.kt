@@ -6,12 +6,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import coil3.request.ImageRequest
-import net.lotharie.kotlin_mvvm.model.FoodItem
+import net.lotharie.kotlin_mvvm.model.CategoryItem
+import net.lotharie.kotlin_mvvm.model.MealItem
 import net.lotharie.kotlin_mvvm.ui.components.molecules.food.FoodItemRow
 
 @Composable
 fun FoodItemList(
-    foodItems: List<FoodItem>,
+    foodItems: List<Item>,
     onItemClicked: (id: String) -> Unit = { },
     expandableItems: Boolean = true,
     iconTransformationBuilder: (ImageRequest.Builder.() -> Unit) = { } // Default to empty transformation builder
@@ -28,4 +29,29 @@ fun FoodItemList(
             )
         }
     }
+}
+
+sealed class Item(
+    val id: String,
+    val name: String,
+    val thumbnailUrl: String,
+    val description: String = ""
+) {
+    data class Food(
+        val mealItem: MealItem
+    ) : Item(
+        id = mealItem.id,
+        name = mealItem.name,
+        thumbnailUrl = mealItem.thumbnailUrl,
+        description = mealItem.description
+    )
+
+    data class Category(
+        val categoryItem: CategoryItem
+    ) : Item(
+        id = categoryItem.id,
+        name = categoryItem.name,
+        thumbnailUrl = categoryItem.thumbnailUrl,
+        description = categoryItem.description
+    )
 }

@@ -19,12 +19,13 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.transformations
 import coil3.transform.CircleCropTransformation
-import net.lotharie.kotlin_mvvm.model.FoodItem
+import net.lotharie.kotlin_mvvm.model.CategoryItem
 import net.lotharie.kotlin_mvvm.ui.components.molecules.food.FoodItemDetails
+import net.lotharie.kotlin_mvvm.ui.components.organisms.food.Item
 
 @Composable
 fun CategoryDetailsCollapsingAppBar(
-    category: FoodItem?,
+    category: CategoryItem?,
     scrollOffset: Float,
 ) {
     val imageSize by animateDpAsState(targetValue = max(72.dp, 128.dp * scrollOffset))
@@ -47,7 +48,16 @@ fun CategoryDetailsCollapsingAppBar(
             )
         }
         FoodItemDetails(
-            item = category,
+            item = category?.let {
+                Item.Category(
+                    categoryItem = CategoryItem(
+                        id = it.id,
+                        name = it.name,
+                        description = it.description,
+                        thumbnailUrl = it.thumbnailUrl
+                    )
+                )
+            },
             expandedLines = (kotlin.math.max(3f, scrollOffset * 6)).toInt(),
             modifier = Modifier
                 .padding(

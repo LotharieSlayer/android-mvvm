@@ -9,11 +9,11 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import net.lotharie.kotlin_mvvm.model.FoodItem
+import net.lotharie.kotlin_mvvm.ui.components.organisms.food.Item
 
 @Composable
 fun FoodItemDetails(
-    item: FoodItem?,
+    item: Item?,
     expandedLines: Int,
     modifier: Modifier
 ) {

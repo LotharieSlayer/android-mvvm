@@ -13,10 +13,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.request.transformations
 import coil3.transform.CircleCropTransformation
-import net.lotharie.kotlin_mvvm.model.FoodItem
+import net.lotharie.kotlin_mvvm.model.CategoryItem
+import net.lotharie.kotlin_mvvm.model.MealItem
 import net.lotharie.kotlin_mvvm.ui.components.atoms.LoadingCircleBox
 import net.lotharie.kotlin_mvvm.ui.components.organisms.appbar.CategoryDetailsCollapsingAppBar
 import net.lotharie.kotlin_mvvm.ui.components.organisms.food.FoodItemList
+import net.lotharie.kotlin_mvvm.ui.components.organisms.food.Item
 import kotlin.math.min
 
 
@@ -32,10 +34,23 @@ fun FoodCategoryDetailsScreen(state: CategoryDetailsUiState) {
             when (state) {
                 is CategoryDetailsUiState.Success -> {
                     Surface(shadowElevation = 4.dp) {
-                        CategoryDetailsCollapsingAppBar(state.category, scrollOffset)
+                        CategoryDetailsCollapsingAppBar(
+                            state.categoryDetailsData.category,
+                            scrollOffset
+                        )
                     }
                     Spacer(modifier = Modifier.height(2.dp))
-                    FoodItemList(foodItems = state.categoryFoodItems,
+                    FoodItemList(
+                        foodItems = state.categoryDetailsData.categoryMealItems.map { item ->
+                            Item.Food(
+                                mealItem = MealItem(
+                                    id = item.id,
+                                    name = item.name,
+                                    description = item.description,
+                                    thumbnailUrl = item.thumbnailUrl
+                                )
+                            )
+                        },
                         expandableItems = false,
                         iconTransformationBuilder = {
                             transformations(
@@ -44,13 +59,15 @@ fun FoodCategoryDetailsScreen(state: CategoryDetailsUiState) {
                         }
                     )
                 }
+
                 is CategoryDetailsUiState.Loading -> {
                     LoadingCircleBox()
                 }
+
                 is CategoryDetailsUiState.Error -> {
                     // Show an error message
                 }
-                }
+            }
         }
     }
 }
@@ -60,15 +77,27 @@ fun FoodCategoryDetailsScreen(state: CategoryDetailsUiState) {
 fun FoodCategoryDetailsScreenPreview() {
     FoodCategoryDetailsScreen(
         state = CategoryDetailsUiState.Success(
-            category = FoodItem(
-                id = "1",
-                name = "Pizza",
-                description = "Delicious cheese pizza",
-                thumbnailUrl = ""
-            ),
-            categoryFoodItems = listOf(
-                FoodItem(id = "1", name = "4 cheeses", description = "Miam miam miam", thumbnailUrl = ""),
-                FoodItem(id = "2", name = "Pineapple", description = "Juicy pineapple weird pizza", thumbnailUrl = "")
+            categoryDetailsData = CategoryDetailsData(
+                category = CategoryItem(
+                    id = "1",
+                    name = "Fruits",
+                    description = "Fresh and healthy fruits",
+                    thumbnailUrl = ""
+                ),
+                categoryMealItems = listOf(
+                    MealItem(
+                        id = "1",
+                        name = "Banana",
+                        description = "Generous banana",
+                        thumbnailUrl = ""
+                    ),
+                    MealItem(
+                        id = "2",
+                        name = "Pineapple",
+                        description = "Juicy pineapple",
+                        thumbnailUrl = ""
+                    )
+                )
             )
         )
     )
