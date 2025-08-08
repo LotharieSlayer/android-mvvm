@@ -4,12 +4,14 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import net.lotharie.kotlin_mvvm.model.api.DataState
+import net.lotharie.kotlin_mvvm.pages.category_details.CategoryDetailsUiState.Error
+import net.lotharie.kotlin_mvvm.pages.category_details.CategoryDetailsUiState.Loading
+import net.lotharie.kotlin_mvvm.pages.category_details.CategoryDetailsUiState.Success
 import net.lotharie.kotlin_mvvm.repository.FoodMenuRepository
 import net.lotharie.kotlin_mvvm.ui.NavigationKeys
 import javax.inject.Inject
@@ -17,26 +19,20 @@ import javax.inject.Inject
 @HiltViewModel
 class FoodCategoryDetailsViewModel @Inject constructor(
     stateHandle: SavedStateHandle,
-    repository: FoodMenuRepository
+    foodMenu: FoodMenuRepository
 ) : ViewModel() {
 
     val categoryId = stateHandle.get<String>(NavigationKeys.Arg.FOOD_CATEGORY_ID) ?: ""
-    val categoryDetailsUiState: StateFlow<CategoryDetailsUiState> =
-        repository.getMealsByCategory(categoryId)
-            .map { dataState ->
-                when (dataState) {
-                    is DataState.Loading -> CategoryDetailsUiState.Loading
-                    is DataState.Success -> CategoryDetailsUiState.Success(dataState.data)
-                    is DataState.Error -> CategoryDetailsUiState.Error(dataState.exception)
-                }
-            }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = CategoryDetailsUiState.Loading
-            )
+    private val _uiState = MutableStateFlow(Loading)
+    val uiState: StateFlow<CategoryDetailsUiState> = _uiState
 
     init {
-        viewModelScope.launch { }
+        viewModelScope.launch (Dispatchers.IO) {
+            when (val dataState = foodMenu.getMealsByCategory(categoryId)) {
+                is DataState.Success -> Success(dataState.data)
+                is DataState.Error -> Error(dataState.exception)
+                DataState.Loading -> Loading
+            }
+        }
     }
 }

@@ -3,12 +3,14 @@ package net.lotharie.kotlin_mvvm.pages.categories
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import net.lotharie.kotlin_mvvm.model.api.DataState
+import net.lotharie.kotlin_mvvm.pages.categories.CategoriesUiState.Error
+import net.lotharie.kotlin_mvvm.pages.categories.CategoriesUiState.Loading
+import net.lotharie.kotlin_mvvm.pages.categories.CategoriesUiState.Success
 import net.lotharie.kotlin_mvvm.repository.FoodMenuRepository
 import javax.inject.Inject
 
@@ -16,22 +18,30 @@ import javax.inject.Inject
 class FoodCategoriesViewModel @Inject constructor(private val foodMenu: FoodMenuRepository) :
     ViewModel() {
 
-    val categoriesUiState: StateFlow<CategoriesUiState> =
-        foodMenu.getFoodCategories().map { dataState ->
-            when (dataState) {
-                is DataState.Loading -> CategoriesUiState.Loading
-                is DataState.Success -> CategoriesUiState.Success(dataState.data)
-                is DataState.Error -> CategoriesUiState.Error(dataState.exception)
-            }
-        }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = CategoriesUiState.Loading
-            )
+    private val _uiState = MutableStateFlow(Loading)
+    val uiState: StateFlow<CategoriesUiState> = _uiState
 
     init {
-        viewModelScope.launch { }
+        viewModelScope.launch {
+            // Fetch food categories and update UI state, retry each 2 seconds until successful because example API always down
+            while (true) {
+                when (val result = foodMenu.getFoodCategories()) {
+                    is DataState.Success -> {
+                        Success(result.data)
+                        return@launch
+                    }
+                    is DataState.Error -> {
+                        Error(result.exception)
+                        // Retry after 2 seconds
+                        delay(2000)
+                    }
+
+                    DataState.Loading -> {
+                        Loading
+                    }
+                }
+            }
+        }
     }
 }
 

@@ -60,7 +60,7 @@ private fun FoodCategoriesDestination(
     navController: NavHostController,
     viewModel: FoodCategoriesViewModel = hiltViewModel()
 ) {
-    val state by viewModel.categoriesUiState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     FoodCategoriesScreen(
         state = state,
         onNavigationRequested = { itemId ->
@@ -72,7 +72,7 @@ private fun FoodCategoriesDestination(
 private fun FoodCategoryDetailsDestination(
     viewModel: FoodCategoryDetailsViewModel = hiltViewModel()
 ) {
-    val state by viewModel.categoryDetailsUiState.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     FoodCategoryDetailsScreen(state)
 }
 
