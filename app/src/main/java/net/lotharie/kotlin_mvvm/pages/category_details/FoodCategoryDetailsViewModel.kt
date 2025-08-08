@@ -31,7 +31,6 @@ class FoodCategoryDetailsViewModel @Inject constructor(
             when (val dataState = foodMenu.getMealsByCategory(categoryId)) {
                 is DataState.Success -> _uiState.value = Success(dataState.data)
                 is DataState.Error -> _uiState.value = Error(dataState.exception)
-                DataState.Loading -> _uiState.value = Loading
             }
         }
     }
