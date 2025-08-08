@@ -1,4 +1,4 @@
-package net.lotharie.kotlin_mvvm
+package net.lotharie.kotlin_mvvm.extensions
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
