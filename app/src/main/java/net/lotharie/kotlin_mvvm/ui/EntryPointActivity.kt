@@ -3,8 +3,12 @@ package net.lotharie.kotlin_mvvm.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -13,6 +17,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.ui.NavDisplay
 import dagger.hilt.android.AndroidEntryPoint
 import net.lotharie.kotlin_mvvm.pages.categories.FoodCategoriesScreen
 import net.lotharie.kotlin_mvvm.pages.categories.FoodCategoriesViewModel
@@ -29,6 +35,34 @@ class EntryPointActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+//            val backStack = remember { mutableStateListOf<Any>(RouteA) }
+//
+//            NavDisplay (
+//                backStack = backStack,
+//                onBack = { backStack.removeLastOrNull() },
+//                entryProvider = { key ->
+//                    when (key) {
+//                        is RouteA -> NavEntry(key) {
+//                            ContentGreen("Welcome to Nav3") {
+//                                Button(onClick = {
+//                                    backStack.add(RouteB("123"))
+//                                }) {
+//                                    Text("Click to navigate")
+//                                }
+//                            }
+//                        }
+//
+//                        is RouteB -> NavEntry(key) {
+//                            ContentBlue("Route id: ${key.id} ")
+//                        }
+//
+//                        else -> {
+//                            error("Unknown route: $key")
+//                        }
+//                    }
+//                }
+//            )
+
             KotlinMVVMTheme {
                 FoodApp()
             }
