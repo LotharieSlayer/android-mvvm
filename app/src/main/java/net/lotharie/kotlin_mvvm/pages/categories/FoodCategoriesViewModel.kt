@@ -35,10 +35,6 @@ class FoodCategoriesViewModel @Inject constructor(private val foodMenu: FoodMenu
                         // Retry after 2 seconds
                         delay(2000)
                     }
-
-                    DataState.Loading -> {
-                        _uiState.value = Loading
-                    }
                 }
             }
         }
