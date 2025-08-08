@@ -16,13 +16,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import coil3.annotation.ExperimentalCoilApi
 import coil3.request.ImageRequest
 import net.lotharie.kotlin_mvvm.noRippleClickable
 import net.lotharie.kotlin_mvvm.ui.components.atoms.ExpandableIcon
 import net.lotharie.kotlin_mvvm.ui.components.organisms.food.Item
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun FoodItemRow(
     item: Item,

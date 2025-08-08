@@ -13,7 +13,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import coil3.annotation.ExperimentalCoilApi
 import dagger.hilt.android.AndroidEntryPoint
 import net.lotharie.kotlin_mvvm.pages.categories.FoodCategoriesScreen
 import net.lotharie.kotlin_mvvm.pages.categories.FoodCategoriesViewModel
@@ -56,7 +55,6 @@ private fun FoodApp() {
     }
 }
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 private fun FoodCategoriesDestination(
     navController: NavHostController,
