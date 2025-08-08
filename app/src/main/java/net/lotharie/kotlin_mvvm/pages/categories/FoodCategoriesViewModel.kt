@@ -18,7 +18,7 @@ import javax.inject.Inject
 class FoodCategoriesViewModel @Inject constructor(private val foodMenu: FoodMenuRepository) :
     ViewModel() {
 
-    private val _uiState = MutableStateFlow(Loading)
+    private val _uiState = MutableStateFlow<CategoriesUiState>(Loading)
     val uiState: StateFlow<CategoriesUiState> = _uiState
 
     init {
@@ -27,17 +27,17 @@ class FoodCategoriesViewModel @Inject constructor(private val foodMenu: FoodMenu
             while (true) {
                 when (val result = foodMenu.getFoodCategories()) {
                     is DataState.Success -> {
-                        Success(result.data)
+                        _uiState.value = Success(result.data)
                         return@launch
                     }
                     is DataState.Error -> {
-                        Error(result.exception)
+                        _uiState.value = Error(result.exception)
                         // Retry after 2 seconds
                         delay(2000)
                     }
 
                     DataState.Loading -> {
-                        Loading
+                        _uiState.value = Loading
                     }
                 }
             }

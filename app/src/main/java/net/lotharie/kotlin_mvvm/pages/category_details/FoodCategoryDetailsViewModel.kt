@@ -23,15 +23,15 @@ class FoodCategoryDetailsViewModel @Inject constructor(
 ) : ViewModel() {
 
     val categoryId = stateHandle.get<String>(NavigationKeys.Arg.FOOD_CATEGORY_ID) ?: ""
-    private val _uiState = MutableStateFlow(Loading)
+    private val _uiState = MutableStateFlow<CategoryDetailsUiState>(Loading)
     val uiState: StateFlow<CategoryDetailsUiState> = _uiState
 
     init {
         viewModelScope.launch (Dispatchers.IO) {
             when (val dataState = foodMenu.getMealsByCategory(categoryId)) {
-                is DataState.Success -> Success(dataState.data)
-                is DataState.Error -> Error(dataState.exception)
-                DataState.Loading -> Loading
+                is DataState.Success -> _uiState.value = Success(dataState.data)
+                is DataState.Error -> _uiState.value = Error(dataState.exception)
+                DataState.Loading -> _uiState.value = Loading
             }
         }
     }
