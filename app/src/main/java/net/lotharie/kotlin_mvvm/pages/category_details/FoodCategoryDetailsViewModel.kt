@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import net.lotharie.kotlin_mvvm.model.api.DataState
 import net.lotharie.kotlin_mvvm.repository.FoodMenuRepository
-import net.lotharie.kotlin_mvvm.ui.NavigationKeys
+import net.lotharie.kotlin_mvvm.ui.navigation.NavigationKeys
 import javax.inject.Inject
 
 @HiltViewModel

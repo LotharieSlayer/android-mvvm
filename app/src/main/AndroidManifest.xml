@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KotlinMVVM">
         <activity
-            android:name=".ui.EntryPointActivity"
+            android:name=".ui.navigation.NavigationActivity"
             android:exported="true"
             android:theme="@style/Theme.KotlinMVVM">
             <intent-filter>

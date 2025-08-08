@@ -8,20 +8,37 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import net.lotharie.kotlin_mvvm.model.CategoryItem
 import net.lotharie.kotlin_mvvm.ui.components.atoms.LoadingCircleBox
 import net.lotharie.kotlin_mvvm.ui.components.organisms.appbar.CategoriesAppBar
 import net.lotharie.kotlin_mvvm.ui.components.organisms.food.FoodItemList
 import net.lotharie.kotlin_mvvm.ui.components.organisms.food.Item
+import net.lotharie.kotlin_mvvm.ui.navigation.NavigationKeys
 import net.lotharie.kotlin_mvvm.ui.theme.KotlinMVVMTheme
 
+
+@Composable
+internal fun FoodCategoriesScreen(
+    onDetailsClick: (String) -> Unit,
+    viewModel: FoodCategoriesViewModel = hiltViewModel()
+) {
+    val state by viewModel.categoriesUiState.collectAsStateWithLifecycle()
+    FoodCategoriesScreen(
+        state = state,
+        onDetailsClick = onDetailsClick
+    )
+}
 @Composable
 fun FoodCategoriesScreen(
     state: CategoriesUiState,
-    onNavigationRequested: (itemId: String) -> Unit
+    onDetailsClick: (itemId: String) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -43,7 +60,7 @@ fun FoodCategoriesScreen(
                             )
                         )
                     },
-                    onItemClicked = onNavigationRequested
+                    onItemClicked = onDetailsClick
                 )
 
                 is CategoriesUiState.Error -> {
@@ -80,7 +97,7 @@ fun FoodCategoriesScreenPreview() {
                     )
                 )
             ),
-            onNavigationRequested = {}
+            onDetailsClick = {}
         )
     }
 }

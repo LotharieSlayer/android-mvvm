@@ -8,13 +8,18 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.request.transformations
 import coil3.transform.CircleCropTransformation
 import net.lotharie.kotlin_mvvm.model.CategoryItem
 import net.lotharie.kotlin_mvvm.model.MealItem
+import net.lotharie.kotlin_mvvm.pages.categories.FoodCategoriesScreen
+import net.lotharie.kotlin_mvvm.pages.categories.FoodCategoriesViewModel
 import net.lotharie.kotlin_mvvm.ui.components.atoms.LoadingCircleBox
 import net.lotharie.kotlin_mvvm.ui.components.organisms.appbar.CategoryDetailsCollapsingAppBar
 import net.lotharie.kotlin_mvvm.ui.components.organisms.food.FoodItemList
@@ -22,6 +27,15 @@ import net.lotharie.kotlin_mvvm.ui.components.organisms.food.Item
 import kotlin.math.min
 
 
+@Composable
+private fun FoodCategoryDetailsRoute(
+    viewModel: FoodCategoryDetailsViewModel = hiltViewModel()
+) {
+    val state by viewModel.categoryDetailsUiState.collectAsStateWithLifecycle()
+    FoodCategoryDetailsScreen(
+        state = state,
+    )
+}
 @Composable
 fun FoodCategoryDetailsScreen(state: CategoryDetailsUiState) {
     val scrollState = rememberLazyListState()
