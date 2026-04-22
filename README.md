@@ -32,4 +32,6 @@ flowchart LR
 - Better stability with API
 
 ### TODO
-- [ ] Need to implement Navigation 3 to be "near perfect", using these examples: [nav3-recipes](https://github.com/android/nav3-recipes)
+- [ ] Implement Navigation 3 to be "near perfect", using these examples: [nav3-recipes](https://github.com/android/nav3-recipes)
+- [ ] Implement UseCases and Transformers if needed
+- [ ] Live, Dummy, etc... environments channels in repositories to make fake/tests requests
